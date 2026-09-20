@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js'
 // Server-only env vars — never exposed to the browser bundle.
 const SUPABASE_URL = process.env.SUPABASE_URL ?? process.env.VITE_SUPABASE_URL ?? ''
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY ?? ''
-const ADMIN_SECRET = process.env.ADMIN_SECRET ?? ''
+const ADMIN_SECRET = process.env.ADMIN_SECRET ?? process.env.VITE_ADMIN_PASSWORD ?? ''
 
 let client: ReturnType<typeof createClient> | null = null
 
