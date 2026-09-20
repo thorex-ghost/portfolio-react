@@ -1,11 +1,11 @@
-import { createClient } from '@supabase/supabase-js'
+const { createClient } = require('@supabase/supabase-js')
 
 // Server-only env vars — never exposed to the browser bundle.
 const SUPABASE_URL = process.env.SUPABASE_URL ?? process.env.VITE_SUPABASE_URL ?? ''
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY ?? ''
 const ADMIN_SECRET = process.env.ADMIN_SECRET ?? process.env.VITE_ADMIN_PASSWORD ?? ''
 
-let client: ReturnType<typeof createClient> | null = null
+let client = null
 
 function getSupabase() {
   if (!client) {
@@ -16,28 +16,7 @@ function getSupabase() {
   return client
 }
 
-interface ProjectBody {
-  id?: string
-  title: string
-  category: string
-  cover_image?: string
-  metric?: string
-  description: string
-  tech_stack: string[]
-  live_url: string
-}
-
-interface RequestBody {
-  action: 'replace' | 'delete' | 'insert'
-  projects?: ProjectBody[]
-  id?: string
-}
-
-export const handler = async (event: {
-  httpMethod: string
-  headers: Record<string, string | undefined>
-  body: string | null
-}) => {
+exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: JSON.stringify({ error: 'Method not allowed' }) }
   }
@@ -55,7 +34,7 @@ export const handler = async (event: {
     }
   }
 
-  let body: RequestBody
+  let body
   try {
     body = event.body ? JSON.parse(event.body) : { action: 'replace', projects: [] }
   } catch {
